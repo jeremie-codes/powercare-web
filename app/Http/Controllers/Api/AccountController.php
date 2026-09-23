@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class AccountController extends Controller
@@ -29,29 +29,17 @@ class AccountController extends Controller
 
             // Gestion de l'image si elle existe
             if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
+                $oldAvatar = $user->avatar;
+                $path = $request->file('avatar')->store('profiles', 'public');
 
-                // Nom unique pour éviter les conflits
-                $fileName = 'avatar_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-
-                // Dossier de destination : public/profiles/
-                $destinationPath = public_path('profiles');
-
-                // Création du dossier s’il n’existe pas
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
+                if ($oldAvatar) {
+                    $oldPath = parse_url($oldAvatar, PHP_URL_PATH) ?: $oldAvatar;
+                    $oldPath = ltrim(str_replace('/storage/', '', $oldPath), '/');
+                    Storage::disk('public')->delete($oldPath);
                 }
 
-                // Déplacement du fichier
-                $file->move($destinationPath, $fileName);
-
-                // Suppression de l'ancienne image si elle existe
-                if ($user->avatar && file_exists(public_path($user->avatar))) {
-                    @unlink(public_path($user->avatar));
-                }
-
-                // Enregistrement du chemin dans la base
-                $user->avatar = 'profiles/' . $fileName;
+                // Enregistre une URL absolue, par exemple https://example.com/storage/profiles/avatar.jpg
+                $user->avatar = Storage::disk('public')->url($path);
             }
 
             // Mise à jour des autres champs

@@ -11,6 +11,49 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    // Résumé de l'espace d'accueil de l'agent connecté
+    public function agentDashboard(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $agent = $user?->agent()->with('user', 'category', 'service', 'recommendedBy')->first();
+
+            if (!$agent) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Profil agent introuvable.',
+                    'data' => null,
+                ], 404);
+            }
+
+            $clientUser = $agent->recommendedBy;
+            $client = $clientUser?->client;
+            $tasks = $client
+                ? TacheAgent::where('agent_id', $agent->id)->where('client_id', $client->id)
+                : TacheAgent::whereRaw('1 = 0');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tableau de bord chargé avec succès.',
+                'data' => [
+                    'agent' => $agent,
+                    'client' => $clientUser ? $clientUser->load('client') : null,
+                    'counts' => [
+                        'total' => (clone $tasks)->count(),
+                        'pending' => (clone $tasks)->where('done', false)->count(),
+                        'completed' => (clone $tasks)->where('done', true)->count(),
+                    ],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de charger le tableau de bord.',
+                'data' => null,
+            ], 500);
+        }
+    }
+
     // Ajouter une tâche pour un agent
     public function addTask(Request $request, $clientId)
     {

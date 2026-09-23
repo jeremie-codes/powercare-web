@@ -13,7 +13,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -141,8 +141,11 @@ class AuthController extends Controller
             $user = $request->user();
 
             if ($user) {
-                // Si tu utilises sanctum :
-                $user->currentAccessToken()->delete();
+                // Les tokens Sanctum transitoires ne peuvent pas être supprimés.
+                $token = $user->currentAccessToken();
+                if ($token instanceof \Laravel\Sanctum\PersonalAccessToken) {
+                    $token->delete();
+                }
 
                 return response()->json([
                     'success' => true,

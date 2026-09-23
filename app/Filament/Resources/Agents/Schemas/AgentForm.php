@@ -3,16 +3,14 @@
 namespace App\Filament\Resources\Agents\Schemas;
 
 use App\Models\User;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\{
-    DatePicker,
-    FileUpload,
-    TextInput,
-    Select,
-    Toggle,
-};
 use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class AgentForm
 {
@@ -21,7 +19,6 @@ class AgentForm
         return $schema
             ->columns(3)
             ->components([
-                // SECTION AGENT
                 Section::make('Informations de l’agent')
                     ->columns(2)
                     ->columnSpanFull()
@@ -29,123 +26,61 @@ class AgentForm
                         Select::make('user_id')
                             ->label('Compte utilisateur')
                             ->options(User::where('role', 'agent')->pluck('name', 'id'))
-                            ->placeholder("Choisir")
-                            ->belowContent("Soit cliquer sur + pour ajoute un utilisateur pour cet agent")
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->placeholder('Choisir un agent')
                             ->createOptionForm([
                                 FileUpload::make('avatar')
                                     ->label('Photo de profil (optionnel)')
                                     ->image()
                                     ->directory('profiles')
                                     ->disk('public')
-                                    ->maxSize(4096)
-                                    ->default(null)->columnSpanFull(),
-                                TextInput::make('name')
-                                    ->required(),
-                                TextInput::make('email')
-                                    ->label('Email address')
-                                    ->email()
-                                    ->required(),
-                                TextInput::make('phone')
-                                    ->tel()
-                                    ->unique()
-                                    ->maxLength(12)
-                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-                                    ->default(null),
-                                TextInput::make('role')
-                                    ->default('agent')
-                                    ->disabled()
-                                    ->dehydrated(true)
-                                    ->required(),
-                                TextInput::make('adresse')
-                                    ->default(null),
+                                    ->maxSize(4096),
+                                TextInput::make('name')->label('Nom complet')->required(),
+                                TextInput::make('email')->email()->required(),
+                                TextInput::make('phone')->tel()->unique()->maxLength(20),
+                                TextInput::make('adresse')->label('Adresse'),
                                 TextInput::make('password')
-                                    ->label('Password (Requis seulement lors de la création)')
+                                    ->label('Mot de passe')
                                     ->password()
-                                    ->required(fn ($context) => $context === 'create')
-                                    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
-                                    ->dehydrated(fn($state) => filled($state)),
-                                Toggle::make('is_active')
-                                    ->label("Aciter le compte")
-                                    ->default(true)
-                                    ->required(),
-                            ])->createOptionUsing(function (array $data) {
-                                return User::create($data)->getKey();
-                            })->createOptionAction(function (Action $action) {
-                                return $action
-                                    ->modalHeading('Création d\'un utilisateur')
-                                    ->modalSubmitActionLabel('Créer')
-                                    ->modalWidth('lg');
-                            }),
+                                    ->required()
+                                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
+                                Toggle::make('is_active')->label('Compte actif')->default(true),
+                            ])
+                            ->createOptionUsing(fn (array $data) => User::create(array_merge($data, ['role' => 'agent']))->getKey())
+                            ->createOptionAction(fn (Action $action) => $action
+                                ->modalHeading('Créer un compte agent')
+                                ->modalSubmitActionLabel('Créer')
+                                ->modalWidth('lg')),
 
                         Select::make('service_id')
                             ->label('Service')
                             ->relationship('service', 'nom')
-                            ->placeholder("Choisir un service")
-                            ->belowContent("Soit cliquer sur + pour créer un service")
-                            ->nullable()
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->placeholder('Choisir un service')
                             ->createOptionForm([
                                 FileUpload::make('image')
                                     ->disk('public')
-                                    ->directory("services")
-                                    ->required()->columnSpanFull(),
-                                TextInput::make('nom')
-                                    ->label('Nom du service')
+                                    ->directory('services')
                                     ->required(),
-                                TextInput::make('description')
-                                    ->required(),
-                                Select::make('type')
-                                    ->label('Type de service')
-                                    ->placeholder('choisir')
-                                    ->options([
-                                        'babysitter' => 'babysitter',
-                                        'menager' => 'menager',
-                                    ])
-                                    ->required(),
-                                TextInput::make('prix_base')
-                                    ->required()
-                                    ->suffix('$ /mois')
-                                    ->numeric(),
-                                Toggle::make('is_actif')
-                                    ->label('Visibilité')
-                                    ->default(true)
-                                    ->required(),
-                            ])->createOptionAction(function (Action $action) {
-                                return $action
-                                    ->modalHeading('Création d\'un service')
-                                    ->modalSubmitActionLabel('Créer')
-                                    ->modalWidth('lg');
-                            }),
-
-                        Select::make('category_id')
-                            ->label('Type d’agent')
-                            ->relationship('category', 'name')
-                            ->placeholder("Choisir")
-                            ->belowContent("Soit cliquer sur + pour créer une catégorie")
-                            ->required()
-                            ->createOptionForm([
-                                TextInput::make('name')
-                                    ->label('Nom du type')
-                                    ->required()
-                            ])->createOptionAction(function (Action $action) {
-                                return $action
-                                    ->modalHeading('Création du type d\'agent')
-                                    ->modalSubmitActionLabel('Créer')
-                                    ->modalWidth('lg');
-                            }),
+                                TextInput::make('nom')->label('Nom du service')->required(),
+                                TextInput::make('description')->required(),
+                                TextInput::make('prix_base')->numeric()->required()->suffix('$ /mois'),
+                                Toggle::make('is_actif')->label('Visible')->default(true),
+                            ])
+                            ->createOptionAction(fn (Action $action) => $action
+                                ->modalHeading('Créer un service')
+                                ->modalSubmitActionLabel('Créer')
+                                ->modalWidth('lg')),
 
                         TextInput::make('experience')
-                            ->label('Expérience (en années)')
-                            ->numeric()
-                            ->default(0)
-                            ->required(),
-
-                        TextInput::make('rating')
-                            ->label('Note (sur 5)')
+                            ->label('Expérience (années)')
                             ->numeric()
                             ->minValue(0)
-                            ->maxValue(5)
                             ->default(0)
-                            ->suffixIcon('heroicon-s-star')
                             ->required(),
 
                         Select::make('disponibilite')
@@ -167,33 +102,28 @@ class AgentForm
                             ->default('disponible')
                             ->required(),
 
-                        TextInput::make('adresse')
-                            ->label('Adresse complète')
-                            ->nullable(),
-
-                        Toggle::make('is_badges')
-                            ->label('Attribuer un badge')
-                            ->default(false),
-
+                        TextInput::make('adresse')->label('Adresse complète'),
+                        Toggle::make('is_badges')->label('Agent certifié')->default(false),
                     ]),
 
                 Section::make('Assignation')
-                    ->columns(1)
+                    ->columns(2)
                     ->columnSpanFull()
                     ->schema([
                         Select::make('recommended_by')
-                            ->label('Récommandé par')
-                            ->afterLabel("Laissez vide si non recommandé par un client")
+                            ->label('Client assigné')
                             ->relationship('recommendedBy', 'name')
-                            ->reactive()
-                            ->placeholder("Choisir un client"),
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->nullable()
+                            ->placeholder('Aucun client assigné'),
 
                         DatePicker::make('recommended_at')
-                            ->label('Date de recommandation')
-                            ->date('Y-m-d')
-                            ->visible(fn ($get) => $get('recommended_by') != null)
-                            ->required(),
-                    ])
+                            ->label('Date d’assignation')
+                            ->visible(fn ($get) => filled($get('recommended_by')))
+                            ->required(fn ($get) => filled($get('recommended_by'))),
+                    ]),
             ]);
     }
 }

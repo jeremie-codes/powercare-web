@@ -16,18 +16,24 @@ class AgentsTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                ->label("Utilisateur")
+                    ->label('Agent')
                     ->searchable()
                     ->sortable(),
-                // TextColumn::make('service_id')->numeric()->sortable(),
-                TextColumn::make('category.name')->label('Type')->searchable(),
+                TextColumn::make('service.nom')
+                    ->label('Service')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('statut')
+                    ->label('Disponibilité')
+                    ->badge()
+                    ->searchable(),
                 TextColumn::make('rating')->icon('heroicon-o-star')
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('is_badges')
                     ->label('Badge')
                     ->boolean(),
-                TextColumn::make('recommendedBy.name')->label('Recommandé')->searchable(),
+                TextColumn::make('recommendedBy.name')->label('Assigné à')->searchable(),
             ])
             ->filters([
                 //

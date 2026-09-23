@@ -26,18 +26,6 @@
 		<div class="e-con-inner">
 			<div class="elementor-element elementor-element-bd955d5 e-con-full e-flex e-con e-child"
 				data-id="bd955d5" data-element_type="container">
-				{{-- <div class="elementor-element elementor-element-be41a40 e-con-full e-flex elementor-invisible e-con e-child"
-					data-id="be41a40" data-element_type="container"
-					data-settings="{&quot;animation&quot;:&quot;slideInDown&quot;}">
-					<div class="elementor-element elementor-element-00beb80 elementor-widget elementor-widget-heading"
-						data-id="00beb80" data-element_type="widget" data-widget_type="heading.default">
-						<h2 class="elementor-heading-title elementor-size-default">Your</h2>
-					</div>
-					<div class="elementor-element elementor-element-5db047c elementor-widget elementor-widget-heading"
-						data-id="5db047c" data-element_type="widget" data-widget_type="heading.default">
-						<h2 class="elementor-heading-title elementor-size-default">Home Friends</h2>
-					</div>
-				</div> --}}
 				<div class="elementor-element elementor-element-96af099 elementor-widget elementor-widget-text-editor"
 					data-id="96af099" data-element_type="widget" data-widget_type="text-editor.default">
 					<p>Chaque mission est accomplie avec professionnalisme et bienveillance, pour garantir le confort, la sécurité et l’harmonie de votre foyer.</p>
@@ -51,9 +39,9 @@
 					data-id="7c519e0" data-element_type="container"
 					data-settings="{&quot;animation&quot;:&quot;slideInUp&quot;}">
 					<div class="elementor-element elementor-element-8964603 elementor-widget elementor-widget-image"
-						data-id="8964603" data-element_type="widget" data-widget_type="image.default">
-						<img fetchpriority="high" decoding="async" width="600" height="700"
-							src="{{ asset($agent->user->avatar) }}"
+						data-id="8964603" data-element_type="widget" data-widget_type="image.default" style="height: 400px; overflow: hidden;">
+						<img fetchpriority="high" decoding="async"
+							src="{{ asset($agent->user->avatar) }}" style="width: 100%; height: 100%;"
 							class="attachment-full size-full wp-image-1253" alt=""
 							srcset="{{ asset($agent->user->avatar) }}"
 							sizes="(max-width: 600px) 100vw, 600px" />

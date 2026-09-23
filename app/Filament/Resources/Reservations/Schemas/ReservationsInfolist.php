@@ -7,7 +7,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Str;
 
 class ReservationsInfolist
 {
@@ -49,17 +48,7 @@ class ReservationsInfolist
                             }),
                         TextEntry::make('transport_inclus')->weight('bold')
                             ->state(function ($record) { return $record->transport_inclus == 1 ? "Oui" : "Non"; }),
-                        TextEntry::make('nombre_personnes')
-                            ->weight('bold')
-                            ->label('Nombre de personnes')
-                            ->visible(fn ($record) =>
-                                Str::contains(Str::lower($record->service->nom), ['baby', 'nounou'])
-                            ),
                         TextEntry::make('taches_specifiques')->weight('bold')->label('Taches supplémentaires'),
-                        TextEntry::make('taille_logement')->weight('bold')->label('Taille du logement')
-                            ->visible(fn ($record) =>
-                                Str::contains(Str::lower($record->service->nom), ['ménage', 'clean', 'menage'])
-                            ),
                         TextEntry::make('conditions_particulieres')->weight('bold')->label('Conditions particulieres'),
                     ]),
                 Section::make('')

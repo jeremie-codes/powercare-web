@@ -42,39 +42,6 @@ class AgentResource extends Resource
         ];
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        // Vérifie que le repeater user_data existe
-        if (isset($data['user_data']) && !empty($data['user_data'][0])) {
-            $userData = $data['user_data'][0];
-
-            // Si un utilisateur existant est choisi
-            if (!empty($userData['existing_user_id'])) {
-                $data['user_id'] = $userData['existing_user_id'];
-            } else {
-                // Crée un nouveau compte utilisateur
-                $user = \App\Models\User::create([
-                    'name' => $userData['name'],
-                    'email' => $userData['email'],
-                    'phone' => $userData['phone'] ?? null,
-                    'adresse' => $userData['adresse'] ?? null,
-                    'avatar' => $userData['avatar'] ?? null,
-                    'password' => $userData['password'], // déjà hashé depuis le form
-                    'is_active' => $userData['is_active'] ?? true,
-                    'role' => 'agent', // important : type d'utilisateur
-                ]);
-
-                $data['user_id'] = $user->id;
-            }
-        }
-
-        // Supprime la section du repeater avant d’insérer en base
-        unset($data['user_data']);
-
-        return $data;
-    }
-
-
     public static function getPages(): array
     {
         return [

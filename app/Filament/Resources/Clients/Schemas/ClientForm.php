@@ -19,13 +19,16 @@ class ClientForm
     {
         return $schema
             ->components([
-                Section::make('Détails de l’agent')
+                Section::make('Informations du client')
                     ->schema([
                         Select::make('user_id')
                             ->label('Compte utilisateur')
                             ->options(User::where('role', 'client')->pluck('name', 'id'))
-                            ->placeholder("Choisir")
-                            ->belowContent("Soit cliquer sur + pour ajoute un utilisateur pour ce client")
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->placeholder('Choisir un client')
+                            ->belowContent('Sélectionnez un compte existant ou créez-le rapidement.')
                             ->createOptionForm([
                                 FileUpload::make('avatar')
                                     ->label('Photo de profil (optionnel)')
@@ -58,10 +61,10 @@ class ClientForm
                                     ->default(true)
                                     ->required(),
                             ])->createOptionUsing(function (array $data) {
-                                return User::create($data)->getKey();
+                                            return User::create(array_merge($data, ['role' => 'client']))->getKey();
                             })->createOptionAction(function (Action $action) {
                                 return $action
-                                    ->modalHeading('Création d\'un utilisateur')
+                                    ->modalHeading('Créer un compte client')
                                     ->modalSubmitActionLabel('Créer')
                                     ->modalWidth('lg');
                             }),

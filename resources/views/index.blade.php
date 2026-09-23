@@ -35,7 +35,7 @@
                 <div class="elementor-element elementor-element-f0a321f elementor-widget__width-initial elementor-invisible elementor-widget elementor-widget-text-editor"
                     data-settings="{&quot;_animation&quot;:&quot;slideInLeft&quot;}"
                     data-id="f0a321f" data-element_type="widget" data-widget_type="text-editor.default">
-                    <p>Agents qualifiés en babysitting et ménage, disponibles quand vous en avez besoin.</p>
+                    <p>Des agents qualifiés, disponibles quand vous en avez besoin.</p>
                 </div>
 
                 <div class="elementor-element elementor-element-e7ab753 elementor-tablet-align-center elementor-mobile-align-center elementor-widget elementor-widget-button"

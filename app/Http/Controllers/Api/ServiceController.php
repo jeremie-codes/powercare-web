@@ -16,6 +16,8 @@ class ServiceController extends Controller
 
             return response()->json($services);
         } catch (\Exception $e) {
+
+            logger('Probleme lors du chargement des services', [$e->getMessage()]);
             return response()->json(['error' => 'Erreur lors du chargement des services', 'message' => $e->getMessage()], 500);
         }
     }

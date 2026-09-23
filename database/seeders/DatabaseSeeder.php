@@ -17,25 +17,23 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::create([
-            'firstname' => 'Test',
-            'lastname' => 'Client',
+            'name' => 'Test client',
+            'phone' => '0827289636',
             'email' => 'client@gmail.com',
             'password'=> Hash::make('password'),
             'role' => 'client',
         ]);
+
         User::create([
-            'firstname' => 'Test',
-            'lastname' => 'Candidate',
-            'email' => 'candidate@gmail.com',
-            'password'=> Hash::make('password'),
-            'role' => 'candidate',
-        ]);
-        User::create([
-            'firstname' => 'Test',
-            'lastname' => 'Admin',
+            'name' => 'Test Admin',
             'email' => 'admin@gmail.com',
             'password'=> Hash::make('password'),
             'role' => 'admin',
+        ]);
+
+        $this->call([
+            ServiceSeeder::class,
+            AgentSeeder::class,
         ]);
     }
 }

@@ -24,6 +24,7 @@ Route::get('/services/{id}', [ServiceController::class, 'show']);
 // -------- Agents --------
 Route::prefix('agents')->group(function () {
     Route::get('/service/{service_id}', [AgentController::class, 'getByService']);
+    Route::get('/certified', [AgentController::class, 'getCertified']);
     Route::get('/{id}', [AgentController::class, 'show']);
     Route::get('/recommended/{id}', [TaskController::class, 'getAgentRecommendedByClient']);
 });
@@ -54,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // -------- Messages / Chat --------
     Route::get('inbox/{user_id}', [MessageController::class, 'getByUser']);
-    
+
     Route::prefix('messages')->group(function () {
         Route::post('/send/{sender_id}', [MessageController::class, 'send']);
         Route::get('/conversation/{sender_id}/{receiver_id}', [MessageController::class, 'getConversation']);
@@ -63,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // -------- Tâches (Agent) --------
     Route::prefix('taches')->group(function () {
+        Route::get('/dashboard', [TaskController::class, 'agentDashboard']);
         Route::post('/agent/{clientId}', [TaskController::class, 'addTask']);
         Route::delete('/agent/{taskId}', [TaskController::class, 'deleteTask']);
         Route::get('/{agentId}/agent/{userId}', [TaskController::class, 'getTaskByAgentId']);

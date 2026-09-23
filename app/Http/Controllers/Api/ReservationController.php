@@ -22,9 +22,7 @@ class ReservationController extends Controller
                 'duree' => 'required|string',
                 'urgence' => 'nullable|boolean',
                 'transport_inclus' => 'nullable|boolean',
-                'nombre_personnes' => 'nullable|integer',
                 'taches_specifiques' => 'nullable|string',
-                'taille_logement' => 'nullable|string',
                 'conditions_particulieres' => 'nullable|string',
                 'phone' => 'required|string',
             ]);

@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Reservations\Schemas;
 
 use App\Models\Agent;
 use App\Models\Client;
-use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -77,17 +76,6 @@ class ReservationsForm
                     ])->columns(2),
                     Step::make('Validation')
                         ->schema([
-                            TextInput::make('taille_logement')
-                                ->label('Taille de logement')
-                                ->placeholder('Ex: 4 pièces, 3 chambres, ect.')
-                                ->hidden(fn (callable $get) => optional(\App\Models\Service::find($get('service_id')))->nom !== 'ménage')
-                                ->numeric(),
-                            TextInput::make('nombre_personnes')
-                                ->label('Nombre d\'enfants')
-                                ->hidden(fn (callable $get) => optional(\App\Models\Service::find($get('service_id')))->nom !== 'babysitting')
-                                ->numeric()
-                                ->default(1)
-                                ->minValue(1),
                             TextInput::make('conditions_particulieres')->placeholder('Facultative'),
                             Textarea::make('adresse')
                                 ->columnSpanFull()
