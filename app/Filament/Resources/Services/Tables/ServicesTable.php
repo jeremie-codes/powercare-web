@@ -19,7 +19,7 @@ class ServicesTable
             ->columns([
                 ImageColumn::make('image')->label('Image')
                 ->state(function ($record) {
-                    return $record->image ? asset($record->image) : null;
+                    return $record->image ? asset('storage/' . $record->image) : null;
                 }),
                 TextColumn::make('nom'),
                 TextColumn::make('description')->limit(30),
