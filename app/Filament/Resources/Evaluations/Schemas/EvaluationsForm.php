@@ -25,13 +25,13 @@ class EvaluationsForm
                         ->placeholder('Choisir')
                         ->required()
                         ->options(Client::with('user')
-                        ->pluck("user_id", 'id')),
+                        ->pluck("user_id", 'name')),
                     Select::make('agent_id')
                         ->label('Agent')
                         ->placeholder('Choisir')
                         ->required()
                         ->options(Agent::with('user')
-                        ->pluck("user_id", 'id')),
+                        ->pluck("user_id", 'name')),
                     TextInput::make('rating')
                         ->label('Note')
                         ->placeholder('de 0 à 5')
