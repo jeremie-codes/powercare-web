@@ -17,7 +17,7 @@ class ServicesTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image')->label('Image')
+                ImageColumn::make('image')->label('Image')->circular()
                 ->state(function ($record) {
                     return $record->image ? asset('storage/' . $record->image) : null;
                 }),
