@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Evaluations\Schemas;
 
 use App\Models\Agent;
 use App\Models\Client;
+use App\Models\User;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -24,14 +25,12 @@ class EvaluationsForm
                         ->label('Client')
                         ->placeholder('Choisir')
                         ->required()
-                        ->options(Client::with('user')
-                        ->pluck("user_id", 'name')),
+                        ->options(User::where('role', 'client')->pluck('name', 'id')),
                     Select::make('agent_id')
                         ->label('Agent')
                         ->placeholder('Choisir')
                         ->required()
-                        ->options(Agent::with('user')
-                        ->pluck("user_id", 'name')),
+                        ->options(User::where('role', 'client')->pluck('name', 'id')),
                     TextInput::make('rating')
                         ->label('Note')
                         ->placeholder('de 0 à 5')
