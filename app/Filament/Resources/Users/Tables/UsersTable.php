@@ -18,7 +18,7 @@ class UsersTable
             ->columns([
                 ImageColumn::make('avatar')->label('Image')->circular()
                 ->state(function ($record) {
-                    return $record->avatar ? asset($record->avatar) : null;
+                    return $record->avatar ? asset('storage/' .$record->avatar) : null;
                 }),
                 TextColumn::make('name')
                     ->searchable(),
