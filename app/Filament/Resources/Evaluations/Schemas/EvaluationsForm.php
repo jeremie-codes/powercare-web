@@ -25,12 +25,12 @@ class EvaluationsForm
                         ->label('Client')
                         ->placeholder('Choisir')
                         ->required()
-                        ->options(User::where('role', 'client')->pluck('name', 'id')),
+                        ->options(User::where('role', '!=', 'agent')->pluck('name', 'id')),
                     Select::make('agent_id')
                         ->label('Agent')
                         ->placeholder('Choisir')
                         ->required()
-                        ->options(User::where('role', 'client')->pluck('name', 'id')),
+                        ->options(User::where('role', 'agent')->pluck('name', 'id')),
                     TextInput::make('rating')
                         ->label('Note')
                         ->placeholder('de 0 à 5')
